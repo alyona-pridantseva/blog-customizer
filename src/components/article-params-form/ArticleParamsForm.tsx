@@ -4,6 +4,7 @@ import { Button } from 'components/button';
 import { RadioGroup } from '../radio-group';
 import { Select } from '../select';
 import { Separator } from '../separator';
+import { Text } from '../text';
 
 import {
 	fontFamilyOptions,
@@ -29,28 +30,31 @@ export const ArticleParamsForm = ({
 }: TArticleParamsFormProps) => {
 	const [sidebarFormState, setSidebarFormState] = useState<boolean>(false);
 	const [select, setSelect] = useState<ArticleStateType>(defaultArticle);
-	const sidebarContainerRef = useRef<HTMLFormElement>(null);
+	const sidebarContainerRef = useRef<HTMLFormElement | null>(null);
 
 	const handleOpenSidebar = () => {
 		setSidebarFormState(!sidebarFormState);
 	};
 
-	function closeOutsideSidebar(event: MouseEvent) {
-		if (
-			sidebarContainerRef.current &&
-			!sidebarContainerRef.current.contains(event.target as Node)
-		) {
-			setSidebarFormState(false);
-		}
-	}
-
 	useEffect(() => {
+		//останавливаем эффект, если форма закрыта, чтобы не навешивать обработчик
+		if (!sidebarFormState) return;
+
+		function closeOutsideSidebar(event: MouseEvent) {
+			if (
+				sidebarContainerRef.current &&
+				!sidebarContainerRef.current.contains(event.target as Node)
+			) {
+				setSidebarFormState(false);
+			}
+		}
+
 		document.addEventListener('mousedown', closeOutsideSidebar);
 		return () => {
 			//удаление листенера, при размонтировании компонента
 			document.removeEventListener('mousedown', closeOutsideSidebar);
 		};
-	}, [sidebarFormState]);
+	}, [sidebarFormState, sidebarContainerRef]);
 
 	function addSelect(event: FormEvent) {
 		event.preventDefault();
@@ -75,7 +79,9 @@ export const ArticleParamsForm = ({
 					className={styles.form}
 					onSubmit={addSelect}
 					onReset={resetSelect}>
-					<h2 className={styles.title}>Задайте параметры</h2>
+					<Text as={'h2'} size={31} weight={800} uppercase={true}>
+						Задайте параметры
+					</Text>
 
 					<Select
 						title='Шрифт'
