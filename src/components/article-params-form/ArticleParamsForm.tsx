@@ -4,7 +4,6 @@ import { Button } from 'components/button';
 import { RadioGroup } from '../radio-group';
 import { Select } from '../select';
 import { Separator } from '../separator';
-import { Text } from '../text';
 
 import {
 	fontFamilyOptions,
@@ -48,6 +47,7 @@ export const ArticleParamsForm = ({
 	useEffect(() => {
 		document.addEventListener('mousedown', closeOutsideSidebar);
 		return () => {
+			//удаление листенера, при размонтировании компонента
 			document.removeEventListener('mousedown', closeOutsideSidebar);
 		};
 	}, [sidebarFormState]);
@@ -75,9 +75,7 @@ export const ArticleParamsForm = ({
 					className={styles.form}
 					onSubmit={addSelect}
 					onReset={resetSelect}>
-					<Text as={'h2'} size={31} weight={800} uppercase>
-						Задайте параметры
-					</Text>
+					<h2 className={styles.title}>Задайте параметры</h2>
 
 					<Select
 						title='Шрифт'
